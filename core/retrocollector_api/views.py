@@ -1,10 +1,10 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from retrocollector.models import Collectible
-from .serializers import CollectibleSerializer
+from retrocollector.models import Collectible, Type
+from .serializers import CollectibleSerializer, TypeSerializer
 
 
-@api_view(['GET', 'POST', 'PUT', 'PATCH', 'DELETE'])
+@api_view(['GET', 'POST', 'PUT', 'DELETE'])
 def collectible_api(request, pk=None):
     if request.method == 'GET':
         if pk is not None:
@@ -35,3 +35,26 @@ def collectible_api(request, pk=None):
         c.delete()
         return Response({'msg': 'Collectible Deleted'})
 
+
+@api_view(['GET', 'POST', 'DELETE'])
+def type_api(request, pk=None):
+    if request.method == 'GET':
+        if pk is not None:
+            c = Type.objects.get(id=pk)
+            serializer = TypeSerializer(c)
+            return Response(serializer.data)
+        t = Type.objects.all()
+        serializer = TypeSerializer(t, many=True)
+        return Response(serializer.data)
+
+    if request.method == 'POST':
+        serializer = TypeSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'msg': 'Type Added'})
+        return Response(serializer.errors)
+
+    if request.method == 'DELETE':
+        c = Type.objects.get(id=pk)
+        c.delete()
+        return Response({'msg': 'Type Deleted'})
