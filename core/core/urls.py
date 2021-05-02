@@ -18,5 +18,5 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/collectibles', include('retrocollector_api.urls')),
+    path('api/', include('retrocollector_api.urls')),
 ]
